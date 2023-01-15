@@ -6,6 +6,9 @@ var User = mongoose.model("User");
 var auth = require("../auth");
 const { sendEvent } = require("../../lib/event");
 
+//TODO figure out how to make this dynamic
+const placeholderImage = "https://walloby-jubilant-journey-67g5j7v6xw2rqxx-3001.preview.app.github.dev/placeholder.png";
+
 // Preload item objects on routes with ':item'
 router.param("item", function(req, res, next, slug) {
   Item.findOne({ slug: slug })
@@ -87,6 +90,9 @@ router.get("/", auth.optional, function(req, res, next) {
           items: await Promise.all(
             items.map(async function(item) {
               item.seller = await User.findById(item.seller);
+              if (!item.image) { //If user didn't provide an image, return a placeholder
+                item.image = placeholderImage;
+              }
               return item.toJSONFor(user);
             })
           ),
@@ -164,7 +170,9 @@ router.get("/:item", auth.optional, function(req, res, next) {
   ])
     .then(function(results) {
       var user = results[0];
-
+      if (!req.item.image) { //If user didn't provide an image, return a placeholder
+        req.item.image = placeholderImage;
+      }
       return res.json({ item: req.item.toJSONFor(user) });
     })
     .catch(next);
