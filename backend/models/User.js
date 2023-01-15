@@ -22,6 +22,12 @@ var UserSchema = new mongoose.Schema(
       match: [/\S+@\S+\.\S+/, "is invalid"],
       index: true
     },
+    isVerified: {
+      type: Boolean,
+      required: [true, "can't be blank"],
+      default: false
+      //index: true
+    },
     bio: String,
     image: String,
     role: {
@@ -72,6 +78,7 @@ UserSchema.methods.toAuthJSON = function() {
   return {
     username: this.username,
     email: this.email,
+    isVerified: this.isVerified,
     token: this.generateJWT(),
     bio: this.bio,
     image: this.image,
@@ -82,6 +89,7 @@ UserSchema.methods.toAuthJSON = function() {
 UserSchema.methods.toProfileJSONFor = function(user) {
   return {
     username: this.username,
+    isVerified: this.isVerified,
     bio: this.bio,
     image:
       this.image || "https://static.productionready.io/images/smiley-cyrus.jpg",
