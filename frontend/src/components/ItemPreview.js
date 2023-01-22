@@ -55,7 +55,7 @@ const ItemPreview = (props) => {
             />
           </Link>
           {
-          item.isVerified &&
+          item.seller.isVerified &&
           <div id="isverified-marker" className="flex-grow-1">
               <img
                 src="verified_seller.svg"
